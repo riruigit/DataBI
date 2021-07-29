@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <link rel="stylesheet" href="/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>
+<!--    <script src="/js/jquery-3.3.1.js" charset="utf-8" type="text/javascript"></script>-->
+<!--    <script src="/js/css/layui.js" charset="utf-8" type="text/javascript"></script>-->
+
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>数据报表分析</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="/toBI">
+                    <div class="layui-form-item" style="text-align: center;">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">用户姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="username" name="username" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" id="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-search-btn"> 搜 索
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/css/public.css}">
+    <script th:src="@{/js/jquery-3.3.1.js}"></script>
+    <script th:src="@{/js/echarts.min.js}"></script>
+    <script th:src="@{/js/echarts-gl.min.js}"></script>
+<!--       <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>-->
+
+
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>数据报表分析</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="/4">
+                    <div class="layui-form-item" style="text-align: center;">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">用户姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="username" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-search-btn"> 搜 索
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+<!-- 面板的开始 -->
+<div class="layui-bg-gray" style="padding: 30px;">
+    <div class="layui-row layui-col-space15">
+        <!-- 表格的开始 -->
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">用户每天主叫通话个数</div>
+                <div class="layui-card-body">
+                    <!-- 表格1开始 -->
+                    <div id="main1" style="width: 100%;height:400px;"></div>
+                    <script type="text/javascript">
+                        var myChart1 = echarts.init(document.getElementById('main1'));
+                        // 显示标题，图例和空的坐标轴
+                        myChart1.setOption({
+                            xAxis: {
+                                data: []
+                            },
+                            tooltip: {},
+                            yAxis: {
+                                show: true,
+                                axisLine: {show: true},
+                                max: 5,
+                                min: 0
+                            },
+                            dataZoom: [
+                                {   // 这个dataZoom组件，默认控制x轴。
+                                    type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
+                                    start: 10,      // 左边在 10% 的位置。
+                                    end: 60         // 右边在 60% 的位置。
+                                }
+                            ],
+                            series: [{
+                                symbolSize: 10,
+                                data: [],
+                                type: 'scatter',
+                                backgroundStyle: {
+                                    color: 'rgba(220, 220, 220, 0.8)'
+                                }
+                            }]
+                        });
+
+                        // 异步加载数据
+                        $.get('/sanDianTu').done(function (result) {
+                            // 填入数据
+                            // var parse = JSON.parse(result)
+                            // console.log(parse)
+                            console.log(result)
+                            var xzhou = [];    //类别数组（实际用来盛放X轴坐标值）
+                            var yzhou = [];    //销量数组（实际用来盛放Y坐标值）
+                            $(result).each(function () {
+                                xzhou.push(this.xzhou);
+                                yzhou.push(this.yzhou);
+                            });
+
+                            myChart1.setOption({
+                                xAxis: {
+                                    data: xzhou
+                                },
+                                series: [{
+                                    data: yzhou
+                                }]
+                            });
+                        });
+
+
+                    </script>
+                    <!-- 表格1结束 -->
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">用户每次通话时长分析</div>
+                <div class="layui-card-body">
+                    <!-- 表格2开始 -->
+                    <div id="main2" style="width: 100%;height:400px;"></div>
+                    <script type="text/javascript">
+                        var myChart2 = echarts.init(document.getElementById('main2'));
+                        // 显示标题，图例和空的坐标轴
+                        myChart2.setOption({
+                            xAxis: {
+                                type: 'category',
+                                data: []
+                            },
+                            tooltip: {},
+                            yAxis: {
+                                type: 'value'
+                            },
+                            series: [{
+                                data: [],
+                                type: 'line'
+                            }]
+                        });
+
+                        // 异步加载数据
+                        $.get('/zheXianTu').done(function (result) {
+                            // 填入数据
+                            var xzhou = [];    //类别数组（实际用来盛放X轴坐标值）
+                            var yzhou = [];    //销量数组（实际用来盛放Y坐标值）
+                            $(result).each(function () {
+                                xzhou.push(this.xzhou);
+                                yzhou.push(this.yzhou);
+                            });
+                            console.log(xzhou)
+                            console.log(yzhou)
+                            myChart2.setOption({
+                                xAxis: {
+                                    data: xzhou
+                                },
+                                series: [{
+                                    // 根据名字对应到相应的系列
+                                    data: yzhou
+                                }]
+                            });
+                        });
+
+
+                    </script>
+                    <!-- 表格2结束 -->
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">用户每个月的通话次数</div>
+                <div class="layui-card-body">
+                    <!-- 表格3开始 -->
+                    <div id="main3" style="width: 100%;height:400px;"></div>
+                    <script type="text/javascript">
+                        var myChart3 = echarts.init(document.getElementById('main3'));
+                        // 显示标题，图例和空的坐标轴
+                        myChart3.setOption({
+                            xAxis: {
+                                type: 'category',
+                                data: []
+
+                            },
+                            tooltip: {},
+                            yAxis: {
+                                type: 'value',
+                                max: 5,
+                                min: 0
+                            },
+                            series: [{
+                                data: [],
+                                type: 'bar',
+                                showBackground: true,
+                                backgroundStyle: {
+                                    color: 'rgba(180, 180, 180, 0.2)'
+                                }
+                            }]
+                        });
+
+                        // 异步加载数据
+                        $.get('/zhuZhuangTu').done(function (result) {
+                            // 填入数据
+                            var xzhou = [];    //类别数组（实际用来盛放X轴坐标值）
+                            var yzhou = [];    //销量数组（实际用来盛放Y坐标值）
+                            $(result).each(function () {
+                                xzhou.push(this.xzhou);
+                                yzhou.push(this.yzhou);
+                            });
+                            console.log(xzhou)
+                            console.log(yzhou)
+                            myChart3.setOption({
+                                xAxis: {
+                                    data: xzhou
+                                },
+                                series: [{
+                                    // 根据名字对应到相应的系列
+                                    data: yzhou
+                                }]
+                            });
+                        });
+                    </script>
+                    <!-- 表格3结束 -->
+                </div>
+            </div>
+        </div>
+
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">每月通话时间统计</div>
+                <div class="layui-card-body">
+                    <!-- 表格4开始 -->
+                    <div id="main4" style="width: 100%;height:400px;"></div>
+                    <script type="text/javascript">
+                        var myChart4 = echarts.init(document.getElementById('main4'));
+
+
+                        $.get('/ThirdD', function (data) {
+                            myChart4.setOption({
+                                grid3D: {
+                                    boxWidth: 200,
+                                    boxDepth: 80,
+                                    viewControl: {
+                                        // projection: 'orthographic'
+                                    },
+                                    light: {
+                                        main: {
+                                            intensity: 1.2,
+                                            shadow: true
+                                        },
+                                        ambient: {
+                                            intensity: 0.3
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    trigger: 'axis',
+                                    axisPointer: {
+                                        type: 'cross'
+                                    }
+                                },
+                                visualMap: {
+                                    max: 3000,
+                                    inRange: {
+                                        color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+                                    }
+                                },
+                                xAxis3D: {
+                                    // 因为 x 轴和 y 轴都是类目数据，所以需要设置 type: 'category' 保证正确显示数据。
+                                    name: '月份',
+
+                                },
+
+                                yAxis3D: {
+                                    name: '年',
+                                    type: 'category'
+                                },
+                                zAxis3D: {
+                                    name: '当月的总通话时长'
+                                },
+                                dataset: {
+                                    source: data
+                                },
+                                series: [
+                                    {
+                                        type: 'scatter3D',
+                                        // symbolSize: 2.5,
+                                        encode: {
+                                            // 维度的名字默认就是表头的属性名
+                                            x: 'month',
+                                            y: 'year',
+                                            z: 'callNum'
+                                        },
+                                        shading: 'lambert',
+
+                                        label: {
+                                            fontSize: 26,
+                                            borderWidth: 1
+                                        },
+
+                                        emphasis: {
+                                            label: {
+                                                fontSize: 20,
+                                                color: '#900'
+                                            },
+                                            itemStyle: {
+                                                color: '#900'
+                                            }
+                                        }
+                                    }
+
+                                ]
+                            })
+                        });
+
+
+                    </script>
+                    <!-- 表格4结束 -->
+                </div>
+            </div>
+        </div>
+
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">用户亲密度分析</div>
+                <div class="layui-card-body">
+                    <!-- 表格5开始 -->
+                    <div id="main5" style="width: 100%;height:400px;"></div>
+                    <script type="text/javascript">
+                        var myChart5 = echarts.init(document.getElementById('main5'));
+                        // 显示标题，图例和空的坐标轴
+                        myChart5.setOption({
+                            xAxis: {
+                                type: 'category',
+                                data: []
+
+                            },
+                            tooltip: {},
+                            yAxis: {
+                                type: 'value'
+
+                            },
+                            series: [{
+                                data: [],
+                                type: 'bar',
+                                showBackground: true,
+                                backgroundStyle: {
+                                    color: 'rgba(180, 180, 180, 0.2)'
+                                }
+                            }]
+                        });
+
+                        // 异步加载数据
+                        $.get('/selectQin').done(function (result) {
+                            // 填入数据
+                            var xzhou = [];    //类别数组（实际用来盛放X轴坐标值）
+                            var yzhou = [];    //销量数组（实际用来盛放Y坐标值）
+                            $(result).each(function () {
+                                xzhou.push(this.xzhou);
+                                yzhou.push(this.yzhou);
+                            });
+                            console.log(xzhou)
+                            console.log(yzhou)
+                            myChart5.setOption({
+                                xAxis: {
+                                    data: xzhou
+                                },
+                                series: [{
+                                    // 根据名字对应到相应的系列
+                                    data: yzhou
+                                }]
+                            });
+                        });
+                    </script>
+                    <!-- 表格5结束 -->
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">用户亲密度分析</div>
+                <div class="layui-card-body">
+                    <!-- 表格6开始 -->
+                    <div id="main6" style="width: 100%;height:400px;"></div>
+                    <script type="text/javascript">
+                        var myChart6 = echarts.init(document.getElementById('main6'));
+                        // 显示标题，图例和空的坐标轴
+                        myChart6.setOption({
+                            title: {
+                                left: 'center'
+                            },
+                            tooltip: {
+                                trigger: 'item'
+                            },
+                            legend: {
+                                orient: 'vertical',
+                                left: 'left',
+                            },
+                            series: [
+                                {
+                                    name: '被叫用户',
+                                    type: 'pie',
+                                    radius: '50%',
+                                    data: [],
+                                    emphasis: {
+                                        itemStyle: {
+                                            shadowBlur: 10,
+                                            shadowOffsetX: 0,
+                                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                        }
+                                    }
+                                }
+                            ]
+                        });
+
+                        // 异步加载数据
+                        $.get('selectBinTu').done(function (result) {
+                            // 填入数据
+                            myChart6.setOption({
+                                series: [{
+                                    // 根据名字对应到相应的系列
+                                    name: '被叫用户',
+                                    data: result
+                                }]
+                            });
+                        });
+
+
+                    </script>
+                    <!-- 表格6结束 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 表格的结束 -->
+    </div>
+</div>
+<!-- 面板的结束 -->
+
+
+</body>
+</html>

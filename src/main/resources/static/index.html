@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <link rel="stylesheet" href="/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+<!--    <script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>-->
+    <script src="/js/echarts.min.js"></script>
+    <script src="/js/jquery-3.3.1.js" charset="utf-8" type="text/javascript"></script>
+    <script src="/js/layui.js" charset="utf-8" type="text/javascript"></script>
+
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>数据报表分析</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="/toBI">
+                    <div class="layui-form-item" style="text-align: center;">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">用户姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="username" name="username" autocomplete="off"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" id="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-search-btn"> 搜 索
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <div class="layui-col-md3">
+            <div class="grid-demo">
+                <div class="layui-bg-gray" style="padding: 30px;">
+                    <div class="layui-row layui-col-space15">
+                        <div class="layui-card">
+                            <div class="layui-card-header">
+                                电信客服系统
+                            </div>
+                            <div class="layui-card-body layuiadmin-card-list">
+                                <p class="layuiadmin-big-font"></p>
+                                <p>
+                                    当前系统用户人数:&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="layuiadmin-span-color"
+                                                                                     id="allUser"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md3">
+            <div class="grid-demo">
+                <div class="layui-bg-gray" style="padding: 30px;">
+                    <div class="layui-row layui-col-space15">
+                        <div class="layui-card">
+                            <div class="layui-card-header">
+                                电信客服系统
+                            </div>
+                            <div class="layui-card-body layuiadmin-card-list">
+
+                                <p>
+                                    当前系统总通话次数:&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="layuiadmin-span-color"
+                                                                                      id="selectCallSum"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md3">
+            <div class="grid-demo">
+                <div class="layui-bg-gray" style="padding: 30px;">
+                    <div class="layui-row layui-col-space15">
+                        <div class="layui-card">
+                            <div class="layui-card-header">
+                                电信客服系统
+                            </div>
+                            <div class="layui-card-body layuiadmin-card-list">
+                                <p>
+                                    当前系统总通话总时间:&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="layuiadmin-span-color"
+                                                                                       id="selectCallTimeSum"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--            2-->
+        <div class="layui-col-md3">
+            <div class="grid-demo">
+                <div class="layui-bg-gray" style="padding: 30px;">
+                    <div class="layui-row layui-col-space15">
+                        <div class="layui-card">
+                            <div class="layui-card-header">
+                                当前系统时间
+                            </div>
+                            <div class="layui-card-body layuiadmin-card-list">
+                                <p class="layuiadmin-big-font"></p>
+                                <p id="nowtime">
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-bg-gray" style="padding: 30px;">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-panel">
+                        <div style="padding: 50px 30px;">
+                            <!--                            开始-->
+                            <!-- 表格4开始 -->
+                            <div id="main7" style="width: 1250px;height:500px;"></div>
+                            <script type="text/javascript">
+                                var myChart7 = echarts.init(document.getElementById('main7'));
+                                var colors = ['#5470C6', '#91CC75', '#EE6666'];
+                                $.get('/selectIndex', function (data) {
+
+                                    console.log(data)
+
+
+                                    myChart7.setOption({
+                                        color: colors,
+
+                                        tooltip: {
+                                            trigger: 'axis',
+                                            axisPointer: {
+                                                type: 'cross'
+                                            }
+                                        },
+                                        grid: {
+                                            right: '20%'
+                                        },
+                                        toolbox: {
+                                            feature: {
+                                                dataView: {show: true, readOnly: false},
+                                                restore: {show: true},
+                                                saveAsImage: {show: true}
+                                            }
+                                        },
+                                        legend: {
+                                            data: ['通话次数', '通话时长']
+                                        },
+                                        xAxis: [
+                                            {
+                                                type: 'category',
+                                                axisTick: {
+                                                    alignWithLabel: true
+                                                },
+                                                data: ['19-1', '19-2', '19-3', '19-4', '19-5', '19-6', '19-7', '19-8',
+                                                    '19-9',
+                                                    '19-10',
+                                                    '19-11', '19-12', '20-1', '20-2', '20-3', '20-4', '20-5', '20-6',
+                                                    '20-7',
+                                                    '20-8',
+                                                    '20-9', '20-10', '20-11', '20-12']
+                                            }
+                                        ],
+                                        yAxis: [
+                                            {
+                                                type: 'value',
+                                                name: '通话次数(次数)',
+                                                // min: 0,
+                                                // max: 50,
+                                                position: 'left',
+                                                axisLine: {
+                                                    show: true,
+                                                    lineStyle: {
+                                                        color: colors[0]
+                                                    }
+                                                }
+
+                                            },
+                                            {
+                                                type: 'value',
+                                                name: '通话时长(分)',
+                                                // min: 0,
+                                                // max: 3000,
+                                                position: 'right',
+                                                offset: 80,
+                                                axisLine: {
+                                                    show: true,
+                                                    lineStyle: {
+                                                        color: colors[1]
+                                                    }
+                                                }
+
+                                            }
+
+                                        ],
+                                        series: [
+                                            {
+                                                name: '通话次数',
+                                                type: 'bar',
+                                                data: data.callSum
+                                            },
+                                            {
+                                                name: '通话时长',
+                                                type: 'bar',
+                                                yAxisIndex: 1,
+                                                data: data.callTimeSum
+                                            }
+
+                                        ]
+
+                                    })
+                                });
+
+
+                            </script>
+                            <!-- 表格4结束 -->
+                            <!--                            结束-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        var t = null;
+        t = setTimeout(time, 1000);//開始运行
+        function time() {
+            clearTimeout(t);//清除定时器
+            dt = new Date();
+            var year = dt.getFullYear();
+            var month = dt.getMonth() + 1;//(0-11,0代表1月)
+            var date = dt.getDate();//获取天
+            var num = dt.getDay();//获取星期
+            var weekday = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+            var hour = dt.getHours();//获取时
+            var minute = dt.getMinutes();//获取分
+            var second = dt.getSeconds();//获取秒
+            //分秒时间是一位数字，在数字前补0。
+            date = extra(date);
+            month = extra(month);
+            minute = extra(minute);
+            second = extra(second);
+            document.getElementById("nowtime").innerHTML = year + " 年 " + month + " 月 " + date + " 日 " + hour + "：" + minute + "：" + second + " " + weekday[num];
+            t = setTimeout(time, 1000); //设定定时器，循环运行
+        }
+    });
+
+    //补位函数。
+    function extra(x) {
+        //如果传入数字小于10，数字前补一位0。
+        if (x < 10) {
+            return "0" + x;
+        } else {
+            return x;
+        }
+    }
+</script>
+<script>
+    $(function () {
+        $.get("allUser", {}, function (data) {
+            $("#allUser").html(data);
+        });
+    });
+</script>
+<script>
+    $(function () {
+        $.get("selectCallSum", {}, function (data) {
+            $("#selectCallSum").html(data);
+        });
+    });
+</script>
+<script>
+    $(function () {
+        $.get("selectCallTimeSum", {}, function (data) {
+            $("#selectCallTimeSum").html(data);
+        });
+    });
+</script>
+</body>
+</html>

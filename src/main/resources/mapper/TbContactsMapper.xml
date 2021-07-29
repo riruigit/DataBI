@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.lingnan.mapper.TbContactsMapper">
+
+
+    <select id="selectIdByName" resultType="edu.lingnan.pojo.TbContacts">
+        select *
+        from callData.tb_contacts
+        where name = #{name}
+    </select>
+    <select id="selectDoSandian" resultType="edu.lingnan.pojo.User">
+        SELECT tb_dimension_date.year as year,
+	tb_dimension_date.month as month,
+	tb_dimension_date.day as day,
+	tb_call.id_contact as id,
+	tb_call.call_sum  as callNum
+        FROM
+            tb_dimension_date,
+            tb_call
+        WHERE
+            tb_call.id_data_dimension = tb_dimension_date.id
+          AND tb_call.id_contact = #{id}
+          AND tb_dimension_date.`day` != - 1
+          AND tb_dimension_date.`month` != - 1
+        ORDER BY year, month ASC
+    </select>
+    <select id="selectDoZheXian" resultType="edu.lingnan.pojo.User">
+        SELECT tb_dimension_date.year as year,
+	tb_dimension_date.month as month,
+	tb_dimension_date.day as day,
+	tb_call.id_contact as id,
+	tb_call.call_duration_sum as callNum
+        FROM
+            tb_dimension_date,
+            tb_call
+        WHERE
+            tb_call.id_data_dimension = tb_dimension_date.id
+          AND tb_call.id_contact = #{id}
+          AND tb_dimension_date.`day` != - 1
+          AND tb_dimension_date.`month` != - 1
+        ORDER BY year, month ASC
+    </select>
+    <select id="selectDoZhuZhuang" resultType="edu.lingnan.pojo.User">
+        SELECT tb_dimension_date.YEAR AS YEAR,
+	tb_dimension_date.MONTH AS MONTH,
+	count( tb_call.call_duration_sum ) AS callNum
+        FROM
+            tb_dimension_date,
+            tb_call
+        WHERE
+            tb_call.id_data_dimension = tb_dimension_date.id
+          AND tb_call.id_contact = #{id}
+          AND tb_dimension_date.`day` != - 1
+          AND tb_dimension_date.`month` != - 1
+        GROUP BY
+            YEAR,
+            MONTH
+        ORDER BY
+            YEAR,
+            MONTH
+    </select>
+    <select id="selectDoThirdD" resultType="edu.lingnan.pojo.User">
+        SELECT tb_dimension_date.YEAR AS YEAR,
+	tb_dimension_date.MONTH AS MONTH,
+	sum( tb_call.call_duration_sum ) AS callNum
+        FROM
+            tb_dimension_date,
+            tb_call
+        WHERE
+            tb_call.id_data_dimension = tb_dimension_date.id
+          AND tb_call.id_contact = #{id}
+          AND tb_dimension_date.`day` != - 1
+          AND tb_dimension_date.`month` != - 1
+        GROUP BY
+            YEAR,
+            MONTH
+        ORDER BY
+            YEAR,
+            MONTH
+    </select>
+    <select id="selectAll" resultType="java.lang.Integer">
+        select count(id)
+        from tb_contacts
+    </select>
+    <select id="selectCallSum" resultType="java.lang.Integer">
+        SELECT
+            sum(call_sum) as count
+        FROM
+            tb_dimension_date,
+            tb_call
+        WHERE
+            tb_call.id_data_dimension = tb_dimension_date.id
+          AND tb_dimension_date.`day` = - 1
+          AND tb_dimension_date.`month` = - 1
+
+    </select>
+    <select id="selectCallTimeSum" resultType="java.lang.Integer">
+        SELECT
+            sum(call_duration_sum) as count
+        FROM
+            tb_dimension_date,
+            tb_call
+        WHERE
+            tb_call.id_data_dimension = tb_dimension_date.id
+          AND tb_dimension_date.`day` = - 1
+          AND tb_dimension_date.`month` = - 1
+
+    </select>
+    <select id="selectIndex" resultType="edu.lingnan.pojo.IndexResult">
+        SELECT
+            tb_dimension_date.YEAR AS year,
+	tb_dimension_date.MONTH AS month,
+	sum( tb_call.call_duration_sum ) AS callTimeNum ,
+		sum( tb_call.call_sum ) AS callNum
+        FROM
+            tb_dimension_date,
+            tb_call
+        WHERE
+            tb_call.id_data_dimension = tb_dimension_date.id
+          and tb_dimension_date.`day` != - 1
+          and tb_dimension_date.`month` != - 1
+          and year != 2021
+        GROUP BY
+            year,
+            month
+        ORDER BY
+            year,
+            month
+    </select>
+    <select id="selectQin" resultType="edu.lingnan.pojo.Sandian">
+        select tb_contacts.name as xzhou,tb_intimacy.intimacy_rank as yzhou
+        from tb_contacts,tb_intimacy
+        where tb_intimacy.contact_id2 = tb_contacts.id
+          and tb_intimacy.contact_id1 = #{id}
+    </select>
+    <select id="selectBinTu" resultType="edu.lingnan.pojo.Bintu">
+        select tb_contacts.name as name,tb_intimacy.intimacy_rank as value
+        from tb_contacts,tb_intimacy
+        where tb_intimacy.contact_id2 = tb_contacts.id
+          and tb_intimacy.contact_id1 = #{id}
+    </select>
+
+
+</mapper>
